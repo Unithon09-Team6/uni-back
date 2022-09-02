@@ -12,7 +12,7 @@ export class RecipesService {
   }
 
   async searchRecipes(searchingString: string) {
-    return this.recipesModel.find({name : {$regex: searchingString}}).exec();
+    return this.recipesModel.find({title : {$regex: searchingString}}).exec();
   }
   async uploadRecipe(searchingString: string) {
     return this.recipesModel.find({name : {$regex: searchingString}}).exec();

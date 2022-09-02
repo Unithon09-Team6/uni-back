@@ -6,7 +6,20 @@ export type RecipesDocument = Recipes & Document;
 @Schema()
 export class Recipes {
   @Prop()
-  name: string;
+  title: string;
+  @Prop()
+  category: string;
+  @Prop()
+  picUrl: string;
+  @Prop()
+  detail: string;
+  @Prop()
+  timer: [
+    {
+      text: string,
+      sec: number
+    }
+  ]
 }
 
 export const RecipesSchema = SchemaFactory.createForClass(Recipes);
