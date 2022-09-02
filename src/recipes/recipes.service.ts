@@ -10,4 +10,11 @@ export class RecipesService {
   async findAll(): Promise<Recipes[]> {
     return this.recipesModel.find().exec();
   }
+
+  async searchRecipes(searchingString: string) {
+    return this.recipesModel.find({name : {$regex: searchingString}}).exec();
+  }
+  async uploadRecipe(searchingString: string) {
+    return this.recipesModel.find({name : {$regex: searchingString}}).exec();
+  }
 }
