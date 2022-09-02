@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Query} from '@nestjs/common';
+import {Body, Controller, Get, Post, Put, Query} from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 import { Recipes } from './schemas/recipes.schema';
 
@@ -12,6 +12,12 @@ export class RecipesController {
     return recipes;
   }
 
+  @Get('/category')
+  async getRecipesByCategory(@Query('category') category: number): Promise<Recipes[]> {
+    const recipes = await this.recipesService.findByCategory(category);
+    return recipes;
+  }
+
   @Get('/search')
   async searchRecipes(@Query('target') searchingString: string): Promise<Recipes[]> {
     const searchResults = await this.recipesService.searchRecipes(searchingString);
@@ -19,6 +25,12 @@ export class RecipesController {
   }
 
   @Post()
+  async createRecipe(@Body() body): Promise<string> {
+    await this.recipesService.create(body);
+    return 'true';
+  }
+
+  @Put()
   async uploadRecipe(@Body() body) {
     await this.recipesService.uploadRecipe(body);
   }

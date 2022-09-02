@@ -2,6 +2,7 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Recipes, RecipesDocument } from './schemas/recipes.schema';
+import { CreateRecipeDto } from './dto/create-recipe';
 
 @Injectable()
 export class RecipesService {
@@ -9,6 +10,16 @@ export class RecipesService {
 
   async findAll(): Promise<Recipes[]> {
     return this.recipesModel.find().exec();
+  }
+
+  async findByCategory(category: number): Promise<Recipes[]> {
+    return this.recipesModel.find({
+      category: category,
+    }).exec();
+  }
+
+  async create(recipe: CreateRecipeDto): Promise<void> {
+    await this.recipesModel.create(recipe);
   }
 
   async searchRecipes(searchingString: string) {
