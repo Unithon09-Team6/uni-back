@@ -10,4 +10,8 @@ export class SubsService {
   async findByCategory(category: number): Promise<Subs[]> {
     return this.subsModel.find({ category: category }).exec();
   }
+
+  async findById(id: string): Promise<Subs | null> {
+    return this.subsModel.findOne({ _id: id }).exec();
+  }
 }

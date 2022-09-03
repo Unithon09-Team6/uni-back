@@ -15,11 +15,7 @@ class timerList {
 }
 @Schema()
 export class Recipes {
-  @ApiProperty({ description: 'id'})
-  @Prop()
-  _id: string;
-
-  @ApiProperty({ description: '상품명 '})
+  @ApiProperty({ description: '상품명 ' })
   @Prop()
   productName: string;
 
@@ -31,7 +27,7 @@ export class Recipes {
   @Prop()
   category: number;
 
-  @ApiProperty({ description: '서브 카테고리 id'})
+  @ApiProperty({ description: '서브 카테고리 id' })
   @Prop()
   subCategory: string;
 
@@ -46,7 +42,7 @@ export class Recipes {
   @ApiProperty({ description: '전체 조리 시간' })
   @Prop()
   totalCount: number;
-  
+
   @ApiProperty({ type: [timerList], description: '타이머 list' })
   @Prop()
   timer: timerList[];

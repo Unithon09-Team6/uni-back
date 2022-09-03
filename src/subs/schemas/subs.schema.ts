@@ -6,11 +6,7 @@ export type SubsDocument = Subs & Document;
 
 @Schema()
 export class Subs {
-  @ApiProperty({ description: 'id'})
-  @Prop()
-  _id: string;
-
-  @ApiProperty({ description: '카테고리 id'})
+  @ApiProperty({ description: '카테고리 id' })
   @Prop()
   category: number;
 
