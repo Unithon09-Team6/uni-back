@@ -38,5 +38,5 @@ export class ImageUploadService {
                 cb(null, `${Date.now().toString()} - ${file.originalname}`);
             },
         }),
-    }).array('upload', 1);
+    });
 }
