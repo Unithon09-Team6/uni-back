@@ -3,10 +3,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Recipes, RecipesDocument } from './schemas/recipes.schema';
 import { CreateRecipeDto } from './dto/create-recipe';
+import * as AWS from 'aws-sdk';
 
+
+const AWS_S3_BUCKET_NAME = "uni-back-bucket";
+const s3 = new AWS.S3();
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
 const MAX_POST = 10;
 @Injectable()
 export class RecipesService {
+  s3 = new AWS.S3()
   constructor(@InjectModel(Recipes.name) private recipesModel: Model<RecipesDocument>) {}
 
   async findAll(): Promise<Recipes[]> {
@@ -55,4 +64,19 @@ export class RecipesService {
     await this.recipesModel.create(recipe);
   }
 
+  async uploadImage(file: Express.Multer.File) {
+    const AWS_S3_BUCKET = 'uni-back-bucket';
+    const params = {
+      Bucket: AWS_S3_BUCKET,
+      Key: String(file.originalname),
+      Body: file.buffer,
+    };
+    try {
+      const response = await this.s3.upload(params).promise();
+      return response;
+    } catch (e) {
+      throw new Error("Failed to upload file");
+    }
+
+  }
 }
