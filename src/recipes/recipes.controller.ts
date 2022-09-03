@@ -12,7 +12,7 @@ export class RecipesController {
     return recipes;
   }
 
-  @Get('search/category')
+  @Get('/search/category')
   async getRecipesByCategory(
     @Query('category') category: string,
     @Query('paging') paging: string,
