@@ -48,6 +48,12 @@ export class RecipesController {
     @Query('target') phrase: string,
     @Query('paging') paging: string,
   ) {
+    if (phrase.trim() === '') {
+      return {
+        count: 0,
+        list: [],
+      };
+    }
     const [list, count] = await Promise.all([
       this.recipesService.findBySearch(phrase, Number(paging)),
       this.recipesService.getSearchPagingCount(phrase),
