@@ -72,13 +72,19 @@ export class RecipesController {
       list: list,
     };
   }
-
+  @ApiOkResponse({
+    description: '이미지 업로드',
+    type: String,
+  })
   @Post('/image')
   @UseInterceptors(FileInterceptor('file'))
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
     return this.recipesService.uploadImage(file);
   }
-
+  @ApiOkResponse({
+    description: '레시피 등록',
+    type: Boolean,
+  })
   @Post()
   async createRecipe(@Body() body): Promise<string> {
     await this.recipesService.create(body);
