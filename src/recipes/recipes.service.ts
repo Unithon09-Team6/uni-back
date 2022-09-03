@@ -30,8 +30,14 @@ export class RecipesService {
     return this.recipesModel.find({
       category: category,
     }, null, {
-      skip: (paging - 1) * MAX_POST,
-      limit: MAX_POST,
+      sort: { _id: -1 },
+    }).exec();
+  }
+
+  async findBySubCategory(subCategory: string): Promise<Recipes[]> {
+    return this.recipesModel.find({
+      subCategory: subCategory,
+    }, null, {
       sort: { _id: -1 },
     }).exec();
   }
@@ -40,8 +46,6 @@ export class RecipesService {
     return this.recipesModel.find({
       title : {$regex: phrase},
     }, null, {
-      skip: (paging - 1) * MAX_POST,
-      limit: MAX_POST,
       sort: { _id: -1 },
     }).exec();
   }

@@ -1,18 +1,17 @@
 import {Body, Controller, Get, Post, Put, Query, UploadedFile, UseInterceptors} from '@nestjs/common';
-import {ApiBody, ApiConsumes, ApiOkResponse, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {ApiBody, ApiConsumes, ApiOkResponse, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import { RecipesService } from './recipes.service';
 import { Recipes } from './schemas/recipes.schema';
 import {FileInterceptor} from "@nestjs/platform-express";
 
 import { ResponseSearch } from './types/recipes.types';
-import {CreateRecipeDto} from "./dto/create-recipe";
-
 
 @ApiTags('recipes')
 @Controller('recipes')
 export class RecipesController {
   public constructor(private readonly recipesService: RecipesService) {}
 
+  @ApiOperation({ summary: '레시피 상세 조회'})
   @ApiOkResponse({
     description: '상세조회',
     type: Recipes,
@@ -26,6 +25,7 @@ export class RecipesController {
     return recipe;
   }
 
+  @ApiOperation({ summary: '상품명으로 조회'})
   @ApiOkResponse({
     description: '상품명 조회',
     type: ResponseSearch,
@@ -50,6 +50,7 @@ export class RecipesController {
     };
   }
 
+  @ApiOperation({ summary: '카테고리로 조회'})
   @ApiOkResponse({
     description: '카테고리 조회',
     type: ResponseSearch,
@@ -73,6 +74,21 @@ export class RecipesController {
       list: list,
     };
   }
+
+  @ApiOperation({ summary: '서브 카테고리로 조회'})
+  @ApiOkResponse({
+    description: '서브카테고리 조회',
+    type: ResponseSearch,
+  })
+  @Get('/search/sub-category')
+  async getRecipeBySubCategory(
+    @Query('id') subCategory: string,
+  ): Promise<Recipes[]> {
+    const list = await this.recipesService.findBySubCategory(subCategory);
+
+    return list;
+  }
+
   @ApiOkResponse({
     description: '이미지 업로드',
   })
