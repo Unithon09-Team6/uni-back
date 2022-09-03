@@ -1,7 +1,8 @@
-import {Body, Controller, Get, Post, Put, Query} from '@nestjs/common';
+import {Body, Controller, Get, Post, Put, Query, UploadedFile, UseInterceptors} from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { RecipesService } from './recipes.service';
 import { Recipes } from './schemas/recipes.schema';
+import {FileInterceptor} from "@nestjs/platform-express";
 
 @ApiTags('recipes')
 @Controller('recipes')
@@ -56,6 +57,12 @@ export class RecipesController {
       count: count,
       list: list,
     };
+  }
+
+  @Post('/image')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+    return this.recipesService.uploadImage(file);
   }
 
   @Post()
