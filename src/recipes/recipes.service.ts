@@ -18,6 +18,10 @@ export class RecipesService {
   s3 = new AWS.S3()
   constructor(@InjectModel(Recipes.name) private recipesModel: Model<RecipesDocument>) {}
 
+  async findAll(): Promise<Recipes[]> {
+    return this.recipesModel.find().exec();
+  }
+
   async findOne(_id: string): Promise<Recipes | null> {
     return this.recipesModel.findOne({ _id: _id }).exec();
   }

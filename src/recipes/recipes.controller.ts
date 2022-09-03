@@ -4,6 +4,9 @@ import { RecipesService } from './recipes.service';
 import { Recipes } from './schemas/recipes.schema';
 import {FileInterceptor} from "@nestjs/platform-express";
 
+import { ResponseSearch } from './types/recipes.types';
+
+
 @ApiTags('recipes')
 @Controller('recipes')
 export class RecipesController {
@@ -22,18 +25,22 @@ export class RecipesController {
     return recipe;
   }
 
-  @Get('/search/category')
-  async getRecipesByCategory(
-    @Query('category') category: string,
-    @Query('paging') paging: string,
-  ): Promise<{count: number, list: Recipes[]}> {
+  @ApiOkResponse({
+    description: '상품명 조회',
+    type: ResponseSearch,
+  })
+  @Get('/search')
+  async searchRecipes(
+    @Query('target') phrase: string, 
+    @Query('paging') paging: string
+  ) {
     const [list, count] = await Promise.all([
-      this.recipesService.findByCategory(
-        Number(category),
-        Number(paging),
+      this.recipesService.findBySearch(
+          phrase,
+          Number(paging),
       ),
-      this.recipesService.getCategoryPagingCount(
-        Number(category),
+      this.recipesService.getSearchPagingCount(
+          phrase,
       ),
     ])
     return {
@@ -42,15 +49,22 @@ export class RecipesController {
     };
   }
 
-  @Get('/search')
-  async searchRecipes(@Query('target') phrase: string,@Query('paging') paging: string) {
+  @ApiOkResponse({
+    description: '카테고리 조회',
+    type: ResponseSearch,
+  })
+  @Get('/search/category')
+  async getRecipesByCategory(
+    @Query('category') category: string,
+    @Query('paging') paging: string,
+  ): Promise<ResponseSearch> {
     const [list, count] = await Promise.all([
-      this.recipesService.findBySearch(
-          phrase,
-          Number(paging),
+      this.recipesService.findByCategory(
+        Number(category),
+        Number(paging),
       ),
-      this.recipesService.getSearchPagingCount(
-          phrase,
+      this.recipesService.getCategoryPagingCount(
+        Number(category),
       ),
     ])
     return {
