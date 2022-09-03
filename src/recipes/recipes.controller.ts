@@ -1,5 +1,5 @@
 import {Body, Controller, Get, Post, Put, Query, UploadedFile, UseInterceptors} from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {ApiBody, ApiConsumes, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import { RecipesService } from './recipes.service';
 import { Recipes } from './schemas/recipes.schema';
 import {FileInterceptor} from "@nestjs/platform-express";
@@ -74,16 +74,27 @@ export class RecipesController {
   }
   @ApiOkResponse({
     description: '이미지 업로드',
-    type: String,
   })
   @Post('/image')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @UseInterceptors(FileInterceptor('file'))
+
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
     return this.recipesService.uploadImage(file);
   }
   @ApiOkResponse({
     description: '레시피 등록',
-    type: Boolean,
   })
   @Post()
   async createRecipe(@Body() body): Promise<string> {
