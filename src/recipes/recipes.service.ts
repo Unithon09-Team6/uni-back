@@ -13,6 +13,10 @@ export class RecipesService {
     return this.recipesModel.find().exec();
   }
 
+  async findOne(_id: string): Promise<Recipes | null> {
+    return this.recipesModel.findOne({ _id: _id }).exec();
+  }
+
   async findByCategory(category: number, paging: number): Promise<Recipes[]> {
     return this.recipesModel.find({
       category: category,
