@@ -15,6 +15,10 @@ class timerList {
 }
 @Schema()
 export class Recipes {
+  @ApiProperty({ description: 'id'})
+  @Prop()
+  _id: string;
+
   @ApiProperty({ description: '제목' })
   @Prop()
   title: string;
