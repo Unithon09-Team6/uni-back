@@ -1,10 +1,11 @@
 import {Body, Controller, Get, Post, Put, Query, UploadedFile, UseInterceptors} from '@nestjs/common';
-import {ApiBody, ApiConsumes, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiBody, ApiConsumes, ApiOkResponse, ApiResponse, ApiTags} from '@nestjs/swagger';
 import { RecipesService } from './recipes.service';
 import { Recipes } from './schemas/recipes.schema';
 import {FileInterceptor} from "@nestjs/platform-express";
 
 import { ResponseSearch } from './types/recipes.types';
+import {CreateRecipeDto} from "./dto/create-recipe";
 
 
 @ApiTags('recipes')
@@ -93,8 +94,17 @@ export class RecipesController {
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
     return this.recipesService.uploadImage(file);
   }
-  @ApiOkResponse({
-    description: '레시피 등록',
+  @ApiResponse({ status: 200, description: '레시피 등록'  })
+  @ApiBody({
+    schema: {
+      properties: {
+        title: { type: "string"},
+        category: { type: "number"},
+        picUrl: { type: "string"},
+        detail: { type: "string"},
+        timer: { type: "[text string, sec number]"},
+      }
+    }
   })
   @Post()
   async createRecipe(@Body() body): Promise<string> {
