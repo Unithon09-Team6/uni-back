@@ -5,8 +5,7 @@ import { Recipes, RecipesDocument } from './schemas/recipes.schema';
 import { CreateRecipeDto } from './dto/create-recipe';
 import * as AWS from 'aws-sdk';
 
-
-const AWS_S3_BUCKET_NAME = "uni-back-bucket";
+const AWS_S3_BUCKET_NAME = 'uni-back-bucket';
 const s3 = new AWS.S3();
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -15,8 +14,10 @@ AWS.config.update({
 const MAX_POST = 10;
 @Injectable()
 export class RecipesService {
-  s3 = new AWS.S3()
-  constructor(@InjectModel(Recipes.name) private recipesModel: Model<RecipesDocument>) {}
+  s3 = new AWS.S3();
+  constructor(
+    @InjectModel(Recipes.name) private recipesModel: Model<RecipesDocument>,
+  ) {}
 
   async findAll(): Promise<Recipes[]> {
     return this.recipesModel.find().exec();
@@ -27,42 +28,58 @@ export class RecipesService {
   }
 
   async findByCategory(category: number, paging: number): Promise<Recipes[]> {
-    return this.recipesModel.find({
-      category: category,
-    }, null, {
-      sort: { _id: -1 },
-    }).exec();
+    return this.recipesModel
+      .find(
+        {
+          category: category,
+        },
+        null,
+        {
+          sort: { _id: -1 },
+        },
+      )
+      .exec();
   }
 
   async findBySubCategory(subCategory: string): Promise<Recipes[]> {
-    return this.recipesModel.find({
-      subCategory: subCategory,
-    }, null, {
-      sort: { _id: -1 },
-    }).exec();
+    return this.recipesModel
+      .find(
+        {
+          subCategory: subCategory,
+        },
+        null,
+        {
+          sort: { _id: -1 },
+        },
+      )
+      .exec();
   }
 
   async findBySearch(phrase: string, paging: number): Promise<Recipes[]> {
-    return this.recipesModel.find({
-      title : {$regex: phrase},
-    }, null, {
-      sort: { _id: -1 },
-    }).exec();
+    return this.recipesModel
+      .find(
+        {
+          productName: { $regex: phrase },
+        },
+        null,
+        {
+          sort: { _id: -1 },
+        },
+      )
+      .exec();
   }
 
-  async getCategoryPagingCount (
-    category: number,
-  ): Promise<number> {
+  async getCategoryPagingCount(category: number): Promise<number> {
     const ret = await this.recipesModel.countDocuments({ category: category });
     return Math.ceil(ret / MAX_POST) || 0;
-  };
+  }
 
-  async getSearchPagingCount (
-      phrase: string,
-  ): Promise<number> {
-    const ret = await this.recipesModel.countDocuments({title : {$regex: phrase}});
+  async getSearchPagingCount(phrase: string): Promise<number> {
+    const ret = await this.recipesModel.countDocuments({
+      title: { $regex: phrase },
+    });
     return Math.ceil(ret / MAX_POST) || 0;
-  };
+  }
 
   async create(recipe: CreateRecipeDto): Promise<void> {
     await this.recipesModel.create(recipe);
@@ -79,8 +96,7 @@ export class RecipesService {
       const response = await this.s3.upload(params).promise();
       return response;
     } catch (e) {
-      throw new Error("Failed to upload file");
+      throw new Error('Failed to upload file');
     }
-
   }
 }
