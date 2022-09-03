@@ -6,6 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "deploy": "npm i --force && npm run build && npx pm2 start dist/main.js",
+    "redeploy": "npm i --force && npm run build && npx pm2 reload all",
     "prestart:prod": "rimraf dist && npm run build",
     "web": "npm run start:prod",
     "prebuild": "rimraf dist",
