@@ -12,7 +12,7 @@ export class RecipesController {
     return recipes;
   }
 
-  @Get('/category')
+  @Get('search/category')
   async getRecipesByCategory(
     @Query('category') category: string,
     @Query('paging') paging: string,
@@ -33,19 +33,25 @@ export class RecipesController {
   }
 
   @Get('/search')
-  async searchRecipes(@Query('target') searchingString: string): Promise<Recipes[]> {
-    const searchResults = await this.recipesService.searchRecipes(searchingString);
-    return searchResults;
+  async searchRecipes(@Query('target') phrase: string,@Query('paging') paging: string) {
+    const [list, count] = await Promise.all([
+      this.recipesService.findBySearch(
+          phrase,
+          Number(paging),
+      ),
+      this.recipesService.getSearchPagingCount(
+          phrase,
+      ),
+    ])
+    return {
+      count: count,
+      list: list,
+    };
   }
 
   @Post()
   async createRecipe(@Body() body): Promise<string> {
     await this.recipesService.create(body);
     return 'true';
-  }
-
-  @Put()
-  async uploadRecipe(@Body() body) {
-    await this.recipesService.uploadRecipe(body);
   }
 }

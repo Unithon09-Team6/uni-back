@@ -23,11 +23,27 @@ export class RecipesService {
     }).exec();
   }
 
+  async findBySearch(phrase: string, paging: number): Promise<Recipes[]> {
+    return this.recipesModel.find({
+      title : {$regex: phrase},
+    }, null, {
+      skip: (paging - 1) * MAX_POST,
+      limit: MAX_POST,
+      sort: { _id: -1 },
+    }).exec();
+  }
+
   async getCategoryPagingCount (
     category: number,
   ): Promise<number> {
     const ret = await this.recipesModel.countDocuments({ category: category });
-  
+    return Math.ceil(ret / MAX_POST) || 0;
+  };
+
+  async getSearchPagingCount (
+      phrase: string,
+  ): Promise<number> {
+    const ret = await this.recipesModel.countDocuments({title : {$regex: phrase}});
     return Math.ceil(ret / MAX_POST) || 0;
   };
 
@@ -35,10 +51,4 @@ export class RecipesService {
     await this.recipesModel.create(recipe);
   }
 
-  async searchRecipes(searchingString: string) {
-    return this.recipesModel.find({title : {$regex: searchingString}}).exec();
-  }
-  async uploadRecipe(searchingString: string) {
-    return this.recipesModel.find({name : {$regex: searchingString}}).exec();
-  }
 }
