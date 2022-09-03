@@ -13,9 +13,23 @@ export class RecipesController {
   }
 
   @Get('/category')
-  async getRecipesByCategory(@Query('category') category: number): Promise<Recipes[]> {
-    const recipes = await this.recipesService.findByCategory(category);
-    return recipes;
+  async getRecipesByCategory(
+    @Query('category') category: string,
+    @Query('paging') paging: string,
+  ): Promise<{count: number, list: Recipes[]}> {
+    const [list, count] = await Promise.all([
+      this.recipesService.findByCategory(
+        Number(category),
+        Number(paging),
+      ),
+      this.recipesService.getCategoryPagingCount(
+        Number(category),
+      ),
+    ])
+    return {
+      count: count,
+      list: list,
+    };
   }
 
   @Get('/search')
