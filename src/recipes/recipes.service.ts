@@ -35,7 +35,7 @@ export class RecipesService {
         },
         null,
         {
-          sort: { _id: 0 },
+          sort: { __v: 0 },
         },
       )
       .exec();
